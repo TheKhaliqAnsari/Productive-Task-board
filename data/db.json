@@ -4,6 +4,11 @@
       "id": "78e40fa8-3430-46d2-a07e-61019c7af489",
       "username": "thekhaliqansari@gmail.com",
       "password": "$2b$10$5glrxdbDBRHEfLKUhCBbY.NXhwhzzLq.7iFMZNdp93lrcUpONH4gu"
+    },
+    {
+      "id": "954fc673-941f-4a3f-8f1c-f20a8ad3bf35",
+      "username": "khaliq",
+      "password": "$2b$10$xeT30E8I/lH4faGEQ4uaLe49QGmqqFK8CeRySpu7PQRGw9Le62qtG"
     }
   ],
   "boards": [
@@ -12,17 +17,38 @@
       "userId": "78e40fa8-3430-46d2-a07e-61019c7af489",
       "name": "tasde",
       "createdAt": "2025-08-09T07:44:41.546Z"
+    },
+    {
+      "id": "e1d80c0d-d9f7-4e83-941d-75e2a19a99bf",
+      "userId": "954fc673-941f-4a3f-8f1c-f20a8ad3bf35",
+      "name": "Study board",
+      "createdAt": "2025-08-09T08:14:18.133Z"
+    },
+    {
+      "id": "53ff2d32-b695-408f-9861-f2d951a4ee27",
+      "userId": "954fc673-941f-4a3f-8f1c-f20a8ad3bf35",
+      "name": "job board",
+      "createdAt": "2025-08-09T08:14:23.167Z"
     }
   ],
   "tasks": [
     {
-      "id": "ec6a5400-d20d-4e08-b0ee-387eec17102f",
-      "boardId": "8444fd3e-c590-4de0-ae09-1eeb862dac3b",
-      "title": "dasdjas;lkda",
-      "description": "ajdalsjdsa;lk",
-      "status": "completed",
+      "id": "7adfcbd7-5cc8-4cb4-aaa3-f0c666497b0e",
+      "boardId": "53ff2d32-b695-408f-9861-f2d951a4ee27",
+      "title": "Learn Developement",
+      "description": "Coding",
+      "status": "pending",
+      "dueDate": "2025-08-10T00:00:00.000Z",
+      "createdAt": "2025-08-09T08:14:56.458Z"
+    },
+    {
+      "id": "00b2caec-0713-442d-9f15-304c72bb75c9",
+      "boardId": "53ff2d32-b695-408f-9861-f2d951a4ee27",
+      "title": "Learn DSA",
+      "description": "Assignments",
+      "status": "pending",
       "dueDate": "2025-08-12T00:00:00.000Z",
-      "createdAt": "2025-08-09T07:51:00.159Z"
+      "createdAt": "2025-08-09T08:14:40.177Z"
     },
     {
       "id": "f96a81a0-ace6-43ea-aabc-f53b6f183ab0",
@@ -32,6 +58,15 @@
       "status": "pending",
       "dueDate": "2025-08-19T00:00:00.000Z",
       "createdAt": "2025-08-09T07:51:39.763Z"
+    },
+    {
+      "id": "ec6a5400-d20d-4e08-b0ee-387eec17102f",
+      "boardId": "8444fd3e-c590-4de0-ae09-1eeb862dac3b",
+      "title": "dasdjas;lkda",
+      "description": "ajdalsjdsa;lk",
+      "status": "completed",
+      "dueDate": "2025-08-12T00:00:00.000Z",
+      "createdAt": "2025-08-09T07:51:00.159Z"
     }
   ]
 }

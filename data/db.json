@@ -1,0 +1,37 @@
+{
+  "users": [
+    {
+      "id": "78e40fa8-3430-46d2-a07e-61019c7af489",
+      "username": "thekhaliqansari@gmail.com",
+      "password": "$2b$10$5glrxdbDBRHEfLKUhCBbY.NXhwhzzLq.7iFMZNdp93lrcUpONH4gu"
+    }
+  ],
+  "boards": [
+    {
+      "id": "8444fd3e-c590-4de0-ae09-1eeb862dac3b",
+      "userId": "78e40fa8-3430-46d2-a07e-61019c7af489",
+      "name": "tasde",
+      "createdAt": "2025-08-09T07:44:41.546Z"
+    }
+  ],
+  "tasks": [
+    {
+      "id": "ec6a5400-d20d-4e08-b0ee-387eec17102f",
+      "boardId": "8444fd3e-c590-4de0-ae09-1eeb862dac3b",
+      "title": "dasdjas;lkda",
+      "description": "ajdalsjdsa;lk",
+      "status": "completed",
+      "dueDate": "2025-08-12T00:00:00.000Z",
+      "createdAt": "2025-08-09T07:51:00.159Z"
+    },
+    {
+      "id": "f96a81a0-ace6-43ea-aabc-f53b6f183ab0",
+      "boardId": "8444fd3e-c590-4de0-ae09-1eeb862dac3b",
+      "title": "asndajsdj",
+      "description": "asdljasld",
+      "status": "pending",
+      "dueDate": "2025-08-19T00:00:00.000Z",
+      "createdAt": "2025-08-09T07:51:39.763Z"
+    }
+  ]
+}

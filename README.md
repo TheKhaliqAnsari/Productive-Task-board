@@ -1,36 +1,82 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+# TaskBoard App
+
+A Next.js (App Router) task management app with secure JWT auth, protected routes, boards and tasks CRUD, drag-and-drop reordering, responsive UI, light/dark themes, and toast notifications.
+
+## Features
+- User authentication with JWT (HTTP-only cookie)
+- Protected routes and user-specific data
+- Boards: create, rename, delete
+- Tasks: create, update (title, description, status, due date), delete
+- Drag-and-drop task reordering (dnd-kit)
+- List and Grid views for tasks
+- Global theme toggle (light/dark) with persistence
+- Toast notifications for success/error
+- Tailwind CSS styling with subtle animations (framer-motion)
+
+## Tech Stack
+- Next.js (App Router)
+- React
+- Tailwind CSS v4
+- @dnd-kit/core, @dnd-kit/sortable
+- jsonwebtoken, bcryptjs
+- framer-motion
 
 ## Getting Started
 
-First, run the development server:
-
+1) Install dependencies
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+npm install
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+2) Run the dev server
+```bash
+npm run dev
+```
 
-You can start editing the page by modifying `app/page.js`. The page auto-updates as you edit the file.
+Visit http://localhost:3000
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+## Project Structure
+- `app/` pages and API routes
+  - `app/api/auth/[...route]` → register, login, logout, me
+  - `app/api/boards/[...route]` → boards CRUD
+  - `app/api/tasks/[...route]` → tasks CRUD + reorder
+- `components/` reusable UI (ThemeToggle, Toast)
+- `lib/` utilities (auth, db)
+- `data/db.json` JSON database
+- `styles/global.css` global styles
 
-## Learn More
+## Environment
+- Demo secret is hardcoded in `lib/auth.js` for simplicity; use env vars for production.
 
-To learn more about Next.js, take a look at the following resources:
+## Usage Flow
+- Register at `/register` → then login `/login` → dashboard `/dashboard`
+- Create a board, open it, add tasks, toggle status, reorder tasks via drag handle
+- Switch list/grid view, toggle theme in header
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## Validation & Error Handling
+- Backend: all inputs validated and sanitized with clear HTTP codes (400/401/403/404)
+- Frontend: client-side checks with inline errors and toasts; handles invalid JWTs and network errors
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+## Accessibility
+- Keyboard navigable forms and buttons
+- ARIA labels for drag handles
 
-## Deploy on Vercel
+## Dependencies
+```json
+{
+  "dependencies": {
+    "next": "15.x",
+    "react": "19.x",
+    "react-dom": "19.x",
+    "@dnd-kit/core": "^6.3.1",
+    "@dnd-kit/sortable": "^10.0.0",
+    "jsonwebtoken": "^9.0.2",
+    "bcryptjs": "^3.0.2",
+    "framer-motion": "^11"
+  }
+}
+```
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+## Notes
+- Data is persisted in `data/db.json` using synchronous fs; suitable for demo/small apps.
+- For production, move secrets to env and replace JSON storage with a database.

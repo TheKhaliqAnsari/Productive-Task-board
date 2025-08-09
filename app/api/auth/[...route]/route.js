@@ -103,30 +103,42 @@ export async function POST(request, { params }) {
   if (action === "login") {
     const user = getUserByUsername(username);
     if (!user) {
+      console.log(`Login failed: User not found for username: ${username}`);
       return NextResponse.json({ error: "Invalid credentials" }, { status: 401 });
     }
 
-    const ok = await bcrypt.compare(password, user.password);
-    if (!ok) {
-      return NextResponse.json({ error: "Invalid credentials" }, { status: 401 });
+    console.log(`Login attempt for user: ${username}, user found: ${!!user}`);
+    
+    try {
+      const ok = await bcrypt.compare(password, user.password);
+      console.log(`Password comparison result: ${ok}`);
+      
+      if (!ok) {
+        console.log(`Login failed: Password mismatch for username: ${username}`);
+        return NextResponse.json({ error: "Invalid credentials" }, { status: 401 });
+      }
+
+      const token = generateToken({ id: user.id, username: user.username });
+      console.log(`Login successful for user: ${username}`);
+
+      const res = NextResponse.json(
+        { user: { id: user.id, username: user.username } },
+        { status: 200 }
+      );
+
+      res.cookies.set("token", token, {
+        httpOnly: true,
+        secure: process.env.NODE_ENV === "production",
+        sameSite: "strict",
+        maxAge: 60 * 60, // 1 hour
+        path: "/",
+      });
+
+      return res;
+    } catch (error) {
+      console.error(`Login error for user ${username}:`, error);
+      return NextResponse.json({ error: "Login failed" }, { status: 500 });
     }
-
-    const token = generateToken({ id: user.id, username: user.username });
-
-    const res = NextResponse.json(
-      { user: { id: user.id, username: user.username } },
-      { status: 200 }
-    );
-
-    res.cookies.set("token", token, {
-      httpOnly: true,
-      secure: true,
-      sameSite: "strict",
-      path: "/",
-      maxAge: 60 * 60, // 1 hour
-    });
-
-    return res;
   }
 
   return NextResponse.json({ error: "Not found" }, { status: 404 });

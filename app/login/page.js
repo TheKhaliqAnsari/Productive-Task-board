@@ -3,7 +3,6 @@
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
-import ThemeToggle from "@/components/ThemeToggle";
 import { useToast } from "@/components/Toast";
 import { motion } from "framer-motion";
 
@@ -55,14 +54,10 @@ export default function LoginPage() {
   }
 
   return (
-    <div className="min-h-screen bg-white text-gray-900 dark:bg-gray-800 dark:text-gray-100 flex items-center justify-center px-4">
-      <div className="absolute top-4 right-4">
-        {/* <ThemeToggle /> */}
-      </div>
-
-      <motion.div initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.2 }} className="w-full max-w-md bg-white dark:bg-gray-900 rounded-xl shadow-md p-6">
+    <div className="min-h-screen bg-gray-900 text-gray-100 flex items-center justify-center px-4">
+      <motion.div initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.2 }} className="w-full max-w-md bg-gray-900 rounded-xl shadow-md p-6">
         <h1 className="text-2xl font-bold mb-1">Welcome back</h1>
-        <p className="text-sm text-gray-600 dark:text-gray-300 mb-6">Log in to your account</p>
+        <p className="text-sm text-gray-300 mb-6">Log in to your account</p>
 
         <form onSubmit={onSubmit} className="space-y-4">
           <div>
@@ -72,8 +67,8 @@ export default function LoginPage() {
               type="text"
               value={username}
               onChange={(e) => setUsername(e.target.value)}
-              className="w-full rounded-md border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-950 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
-              placeholder="yourname"
+              className="w-full rounded-md border border-gray-700 bg-gray-950 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+              placeholder="Enter your username"
               autoComplete="username"
             />
           </div>
@@ -85,7 +80,7 @@ export default function LoginPage() {
               type="password"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
-              className="w-full rounded-md border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-950 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="w-full rounded-md border border-gray-700 bg-gray-950 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
               placeholder="••••••"
               autoComplete="current-password"
             />
@@ -97,12 +92,12 @@ export default function LoginPage() {
         </form>
 
         {error && (
-          <p className="mt-3 text-sm text-red-600 dark:text-red-400" role="alert">{error}</p>
+          <p className="mt-3 text-sm text-red-400" role="alert">{error}</p>
         )}
 
-        <p className="mt-6 text-sm text-gray-700 dark:text-gray-300">
+        <p className="mt-6 text-sm text-gray-300">
           Don&apos;t have an account? {" "}
-          <Link href="/register" className="text-blue-600 dark:text-blue-400 hover:underline">Register</Link>
+          <Link href="/register" className="text-blue-400 hover:underline">Register</Link>
         </p>
       </motion.div>
     </div>

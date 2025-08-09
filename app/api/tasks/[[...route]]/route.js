@@ -53,10 +53,12 @@ export async function POST(request) {
   const boardId = String(body?.boardId ?? "").trim();
   const title = String(body?.title ?? "").trim();
   const description = typeof body?.description === "string" ? body.description.trim() : undefined;
+  const priority = typeof body?.priority === "string" ? body.priority.trim() : "medium";
   let dueDate = typeof body?.dueDate === "string" ? body.dueDate.trim() : undefined;
 
   if (!boardId || !isValidUUID(boardId)) return NextResponse.json({ error: "Invalid board id" }, { status: 400 });
   if (!title) return NextResponse.json({ error: "title is required" }, { status: 400 });
+  if (priority && !["low", "medium", "high"].includes(priority)) return NextResponse.json({ error: "Invalid priority" }, { status: 400 });
   if (dueDate && !isValidISODate(dueDate)) return NextResponse.json({ error: "Invalid dueDate" }, { status: 400 });
 
   const db = getDB();
@@ -65,7 +67,7 @@ export async function POST(request) {
   if (board.userId !== user.id) return NextResponse.json({ error: "Forbidden" }, { status: 403 });
 
   const now = new Date().toISOString();
-  const task = { id: randomUUID(), boardId, title, description, status: "pending", dueDate, createdAt: now };
+  const task = { id: randomUUID(), boardId, title, description, status: "pending", priority, dueDate, createdAt: now };
   db.tasks.push(task);
   saveDB(db);
   return NextResponse.json({ task }, { status: 201 });
@@ -94,6 +96,11 @@ export async function PUT(request, { params }) {
     const s = body.status.trim();
     if (s !== "pending" && s !== "completed") return NextResponse.json({ error: "Invalid status" }, { status: 400 });
     task.status = s;
+  }
+  if (typeof body.priority === "string") {
+    const p = body.priority.trim();
+    if (!["low", "medium", "high"].includes(p)) return NextResponse.json({ error: "Invalid priority" }, { status: 400 });
+    task.priority = p;
   }
   if (typeof body.dueDate === "string" || body.dueDate === null) {
     if (typeof body.dueDate === "string" && body.dueDate && !isValidISODate(body.dueDate)) return NextResponse.json({ error: "Invalid dueDate" }, { status: 400 });

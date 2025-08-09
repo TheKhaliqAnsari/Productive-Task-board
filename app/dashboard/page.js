@@ -145,7 +145,7 @@ export default function DashboardPage() {
             </p>
           </div>
           <div className="flex items-center gap-3">
-            <ThemeToggle />
+            {/* <ThemeToggle /> */}
             <button onClick={handleLogout} className="px-3 py-1 rounded-md bg-blue-500 hover:bg-blue-600 text-white text-sm">Logout</button>
           </div>
         </div>

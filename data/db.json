@@ -27,11 +27,20 @@
     {
       "id": "53ff2d32-b695-408f-9861-f2d951a4ee27",
       "userId": "954fc673-941f-4a3f-8f1c-f20a8ad3bf35",
-      "name": "job board",
+      "name": "Job Board",
       "createdAt": "2025-08-09T08:14:23.167Z"
     }
   ],
   "tasks": [
+    {
+      "id": "00b2caec-0713-442d-9f15-304c72bb75c9",
+      "boardId": "53ff2d32-b695-408f-9861-f2d951a4ee27",
+      "title": "Learn DSA",
+      "description": "Assignments",
+      "status": "completed",
+      "dueDate": "2025-08-12T00:00:00.000Z",
+      "createdAt": "2025-08-09T08:14:40.177Z"
+    },
     {
       "id": "7adfcbd7-5cc8-4cb4-aaa3-f0c666497b0e",
       "boardId": "53ff2d32-b695-408f-9861-f2d951a4ee27",
@@ -42,13 +51,13 @@
       "createdAt": "2025-08-09T08:14:56.458Z"
     },
     {
-      "id": "00b2caec-0713-442d-9f15-304c72bb75c9",
+      "id": "28a21c69-b242-4648-b7c2-a46d3e7bc08e",
       "boardId": "53ff2d32-b695-408f-9861-f2d951a4ee27",
-      "title": "Learn DSA",
-      "description": "Assignments",
+      "title": "hggfhkj",
+      "description": "gfr45wswsredtr",
       "status": "pending",
-      "dueDate": "2025-08-12T00:00:00.000Z",
-      "createdAt": "2025-08-09T08:14:40.177Z"
+      "dueDate": "2025-08-29T00:00:00.000Z",
+      "createdAt": "2025-08-09T13:07:28.781Z"
     },
     {
       "id": "f96a81a0-ace6-43ea-aabc-f53b6f183ab0",

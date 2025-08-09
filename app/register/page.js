@@ -57,7 +57,7 @@ export default function RegisterPage() {
   return (
     <div className="min-h-screen bg-white text-gray-900 dark:bg-gray-800 dark:text-gray-100 flex items-center justify-center px-4">
       <div className="absolute top-4 right-4">
-        <ThemeToggle />
+        {/* <ThemeToggle /> */}
       </div>
 
       <motion.div initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.2 }} className="w-full max-w-md bg-white dark:bg-gray-900 rounded-xl shadow-md p-6">

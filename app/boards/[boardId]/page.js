@@ -5,9 +5,21 @@ import { useRouter, useParams } from "next/navigation";
 import Link from "next/link";
 import { useToast } from "@/components/Toast";
 import { motion } from "framer-motion";
-import { DndContext, closestCenter, PointerSensor, useSensor, useSensors } from "@dnd-kit/core";
+import { DndContext, closestCorners, PointerSensor, useSensor, useSensors, DragOverlay } from "@dnd-kit/core";
 import { SortableContext, verticalListSortingStrategy, useSortable, arrayMove } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
+
+const COLUMNS = [
+  { key: "pending", label: "Pending" },
+  { key: "completed", label: "Completed" },
+];
+
+function groupTasks(tasks) {
+  return {
+    pending: tasks.filter((t) => t.status === "pending"),
+    completed: tasks.filter((t) => t.status === "completed"),
+  };
+}
 
 function daysUntil(dateIso) {
   if (!dateIso) return null;
@@ -105,7 +117,8 @@ export default function BoardPage() {
   const [description, setDescription] = useState("");
   const [dueDate, setDueDate] = useState("");
 
-  const sensors = useSensors(useSensor(PointerSensor, { activationConstraint: { distance: 8 } }));
+  const sensors = useSensors(useSensor(PointerSensor, { activationConstraint: { distance: 5 } }));
+  const [activeId, setActiveId] = useState(null);
 
   useEffect(() => {
     async function bootstrap() {
@@ -191,18 +204,79 @@ export default function BoardPage() {
     } catch { const m = "Network error. Please try again."; setError(m); addToast({ type: "error", message: m }); }
   }
 
-  function onDragEnd(event) {
+  function findContainer(id) {
+    const grouped = groupTasks(tasks);
+    for (const col of COLUMNS) {
+      if (grouped[col.key].some((t) => t.id === id)) return col.key;
+    }
+    return null;
+  }
+
+  function onDragStart(event) {
+    setActiveId(event.active.id);
+  }
+
+  async function onDragEnd(event) {
     const { active, over } = event;
-    if (!over || active.id === over.id) return;
+    setActiveId(null);
+    if (!over) return;
+
+    const activeCol = findContainer(active.id);
+    let overCol = findContainer(over.id);
+
+    // If dropping into a column container, infer from dataset
+    if (!overCol && over?.data?.current?.columnKey) {
+      overCol = over.data.current.columnKey;
+    }
+
+    if (!activeCol || !overCol) return;
+
     setTasks((prev) => {
-      const oldIndex = prev.findIndex((t) => t.id === active.id);
-      const newIndex = prev.findIndex((t) => t.id === over.id);
-      const next = arrayMove(prev, oldIndex, newIndex);
-      const ids = next.map((t) => t.id);
-      fetch("/api/tasks/reorder", { method: "PATCH", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ ids }) }).catch(() => {});
-      return next;
+      const grouped = groupTasks(prev);
+      const from = grouped[activeCol];
+      const to = grouped[overCol];
+
+      const activeIndex = from.findIndex((t) => t.id === active.id);
+      const overIndex = overCol === activeCol
+        ? from.findIndex((t) => t.id === over.id)
+        : to.findIndex((t) => t.id === over.id);
+
+      const activeTask = from[activeIndex];
+      // Remove from source
+      const newFrom = [...from];
+      newFrom.splice(activeIndex, 1);
+
+      let newTo;
+      if (overCol === activeCol) {
+        newTo = arrayMove(from, activeIndex, overIndex);
+      } else {
+        newTo = [...to];
+        const insertAt = overIndex >= 0 ? overIndex : newTo.length;
+        newTo.splice(insertAt, 0, { ...activeTask, status: overCol });
+      }
+
+      const next = prev.map((t) => {
+        if (t.id === active.id) return { ...t, status: overCol };
+        return t;
+      });
+
+      // Merge back grouped lists into linear order (preserve existing order across columns)
+      const merged = [
+        ...next.filter((t) => t.status === "pending"),
+        ...next.filter((t) => t.status === "completed"),
+      ];
+
+      // Persist status change
+      fetch(`/api/tasks/${active.id}`, { method: "PUT", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ status: overCol }) }).catch(() => {});
+
+      // Persist new global order
+      fetch("/api/tasks/reorder", { method: "PATCH", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ ids: merged.map((t) => t.id) }) }).catch(() => {});
+
+      return merged;
     });
   }
+
+  const grouped = groupTasks(tasks);
 
   if (!boardId) return null;
 
@@ -247,17 +321,32 @@ export default function BoardPage() {
               <p>Loading...</p>
             ) : (
               <motion.section initial={{ opacity: 0 }} animate={{ opacity: 1 }}>
-                <DndContext sensors={sensors} collisionDetection={closestCenter} onDragEnd={onDragEnd}>
-                  <SortableContext items={tasks.map((t) => t.id)} strategy={verticalListSortingStrategy}>
-                    <div className={view === "grid" ? "grid grid-cols-1 md:grid-cols-2 gap-3" : "space-y-3"}>
-                      {tasks.map((t) => (
-                        <SortableTaskCard key={t.id} task={t} onToggle={toggleStatus} onDelete={deleteTask} onInlineSave={inlineSaveTask} view={view} />
-                      ))}
-                      {tasks.length === 0 && (
-                        <p className="text-sm text-gray-300">No tasks yet. Add one above.</p>
-                      )}
-                    </div>
-                  </SortableContext>
+                <DndContext sensors={sensors} collisionDetection={closestCorners} onDragStart={onDragStart} onDragEnd={onDragEnd}>
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    {COLUMNS.map((col) => (
+                      <div key={col.key} className="rounded-xl border border-gray-800 bg-gray-900">
+                        <div className="px-3 py-2 border-b border-gray-800 flex items-center justify-between">
+                          <h3 className="text-sm font-semibold text-white/90">{col.label}</h3>
+                          <span className="text-xs text-white/50">{grouped[col.key].length}</span>
+                        </div>
+                        <SortableContext items={grouped[col.key].map((t) => t.id)} strategy={verticalListSortingStrategy}>
+                          <div
+                            className="p-3 min-h-[120px] space-y-3"
+                            data-column-key={col.key}
+                            // Pass column key in droppable data for over detection
+                            {...{}}
+                          >
+                            {grouped[col.key].map((t) => (
+                              <SortableTaskCard key={t.id} task={t} onToggle={toggleStatus} onDelete={deleteTask} onInlineSave={inlineSaveTask} view="list" />
+                            ))}
+                            {grouped[col.key].length === 0 && (
+                              <p className="text-xs text-white/40">Drop tasks here</p>
+                            )}
+                          </div>
+                        </SortableContext>
+                      </div>
+                    ))}
+                  </div>
                 </DndContext>
               </motion.section>
             )}
